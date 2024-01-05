@@ -1,6 +1,5 @@
 export function Input(props) {
-
-  const { id, label, error, onChange } = props;
+  const { id, label, error, onChange, type } = props;
 
   return (
     <div className="mb-3">

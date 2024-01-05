@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ApiError {
-    
+
     private int status;
 
     private String message;
@@ -13,9 +13,8 @@ public class ApiError {
     private String path;
 
     private long timestamp = new Date().getTime();
-    
-    private Map<String, String> validationErrors = new HashMap<>();
 
+    private Map<String, String> validationErrors = new HashMap<>();
 
     public int getStatus() {
         return status;
@@ -24,7 +23,7 @@ public class ApiError {
     public void setStatus(int status) {
         this.status = status;
     }
-        
+
     public String getMessage() {
         return message;
     }
@@ -32,15 +31,15 @@ public class ApiError {
     public void setMessage(String message) {
         this.message = message;
     }
-    
+
     public String getPath() {
         return path;
     }
 
     public void setPath(String path) {
         this.path = path;
-    }    
-    
+    }
+
     public long getTimestamp() {
         return timestamp;
     }

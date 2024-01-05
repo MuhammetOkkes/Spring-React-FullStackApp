@@ -6,6 +6,6 @@ import "./styles.scss"
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <SignUp />
+    <SignUp />    
   </React.StrictMode>,
 )

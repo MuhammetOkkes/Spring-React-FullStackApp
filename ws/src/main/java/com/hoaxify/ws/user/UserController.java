@@ -33,25 +33,27 @@ public class UserController {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    ResponseEntity<ApiError> metod(MethodArgumentNotValidException exception) {
+    ResponseEntity<ApiError> handleMethodArgNotValidEx(MethodArgumentNotValidException exception) {
         ApiError apiError = new ApiError();
         apiError.setPath("/api/v1/users");
         apiError.setMessage("Validation Errors");
         apiError.setStatus(400);
-        /*
-         * Map<String,String> validationErrors = new HashMap<>();
-         * 
-         * for (var error : exception.getBindingResult().getAllErrors()) {
-         * if(error instanceof FieldError) {
-         * FieldError fieldError = (FieldError) error;
-         * validationErrors.put(fieldError.getField(), fieldError.getDefaultMessage());
-         * }
-         * }
-         */
 
         var validationErrors = exception.getBindingResult().getFieldErrors().stream()
-                .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage, (existing, replacing) -> existing));
+                .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage,
+                        (existing, replacing) -> existing));
+        apiError.setValidationErrors(validationErrors);
+        return ResponseEntity.badRequest().body(apiError);
+    }
 
+    @ExceptionHandler(NotUniqueEmailException.class)
+    ResponseEntity<ApiError> handleNotUniqueEmailEx(NotUniqueEmailException exception) {
+        ApiError apiError = new ApiError();
+        apiError.setPath("/api/v1/users");
+        apiError.setMessage("Validation Errors");
+        apiError.setStatus(400);
+        Map<String, String> validationErrors = new HashMap<>();
+        validationErrors.put("email", "E-mail in use");
         apiError.setValidationErrors(validationErrors);
         return ResponseEntity.badRequest().body(apiError);
     }

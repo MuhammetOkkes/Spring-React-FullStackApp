@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { signUp } from "./api";
 import { Input } from "./components/Input";
 
@@ -14,15 +14,13 @@ export function SignUp() {
   const [generalError, setGeneralError] = useState();
 
   useEffect(() => {
-    setErrors(
-      function(lastErrors) {
-        return {
-          ...lastErrors,
-          username: undefined
-        }
-      }
-    );
-  }, [username])
+    setErrors(function (lastErrors) {
+      return {
+        ...lastErrors,
+        username: undefined,
+      };
+    });
+  }, [username]);
 
   useEffect(() => {
     setErrors(function (lastErrors) {
@@ -32,6 +30,15 @@ export function SignUp() {
       };
     });
   }, [email]);
+
+  useEffect(() => {
+    setErrors(function (lastErrors) {
+      return {
+        ...lastErrors,
+        password: undefined,
+      };
+    });
+  }, [password]);
 
   const onSubmit = async (event) => {
     event.preventDefault();
@@ -49,14 +56,21 @@ export function SignUp() {
     } catch (axiosError) {
       if (axiosError.response?.data && axiosError.response.data.status == 400) {
         setErrors(axiosError.response.data.validationErrors);
-      }
-      else {
-        setGeneralError("Unexpected error occured. Please try again")
+      } else {
+        setGeneralError("Unexpected error occured. Please try again");
       }
     } finally {
       setApiProgress(false);
     }
   };
+
+  const passwordRepeatError = useMemo(() => {
+    if (password && password !== passwordRepeat) {
+      console.log("rendering");
+      return "Password mismatch";
+    }
+    return "";
+  }, [password, passwordRepeat]);
 
   return (
     <div className="container">
@@ -85,29 +99,16 @@ export function SignUp() {
               label="Password"
               error={errors.password}
               onChange={(event) => setPassword(event.target.value)}
+              type="password"
             />
-            <div className="mb-3">
-              <label htmlFor="password" className="form-label">
-                Password
-              </label>
-              <input
-                id="password"
-                className="form-control"
-                type="password"
-                onChange={(event) => setPassword(event.target.value)} type  "password"
-              />
-            </div>
-          {/*   <div className="mb-3">
-              <label htmlFor="passwordRepeat" className="form-label">
-                Password Repeat
-              </label>
-              <input
-                id="passwordRepeat"
-                className="form-control"
-                type="password"
-                onChange={(event) => setPasswordRepeat(event.target.value)}
-              />
-            </div> */}
+
+            <Input
+              id="passwordRepeat"
+              label="Password Repeat"
+              error={errors.passwordRepeatError}
+              onChange={(event) => setPasswordRepeat(event.target.value)}
+              type="password"
+            />
 
             {successMessage && (
               <div className="alert alert-success">{successMessage}</div>
